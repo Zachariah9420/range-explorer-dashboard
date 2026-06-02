@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-tw">
+<head>
+<meta charset="utf-8">
+<title>TAIEX Range Explorer · V4</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #000; height: 100%; overflow: hidden;
+    font-family: 'IBM Plex Sans', 'Noto Sans TC', -apple-system, sans-serif; }
+  #root { width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<!--
+  資料來源切換：
+  · 開發 / 離線：保留 <script src="data-base.js"></script>（內含 window.DATA = {...}）
+  · 部署 / 線上：改用 loader.js（從 dashboard.json fetch + 30s auto-refresh）
+  · 兩個都掛也沒關係，loader 拉到新資料會覆蓋 data-base.js
+-->
+<script src="data-base.js"></script>
+<script src="loader.js"></script>
+
+<script type="text/babel" src="components/shared.jsx"></script>
+<script type="text/babel" src="components/variant-cone-hero.jsx"></script>
+<script type="text/babel">
+  // Wait until DATA exists (loader.js fetches async) before first render.
+  // ConeHeroVariant itself listens to DATA_UPDATED for live refreshes.
+  function mount() {
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<window.ConeHeroVariant />);
+  }
+  if (window.DATA) {
+    mount();
+  } else {
+    window.addEventListener('DATA_UPDATED', mount, { once: true });
+    // Fallback if no data within 5s, still mount so user sees "LOADING DATA…"
+    setTimeout(() => { if (!window.__mounted) { window.__mounted = true; mount(); } }, 5000);
+  }
+</script>
+
+</body>
+</html>
