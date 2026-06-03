@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-tw">
+<head>
+<meta charset="utf-8">
+<title>TAIEX Intraday Bands · 盤中堆疊區間</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #000; height: 100%; overflow: hidden;
+    font-family: 'IBM Plex Sans', 'Noto Sans TC', -apple-system, sans-serif; }
+  #root { width: 100vw; height: 100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="components/intraday-band.jsx"></script>
+<script type="text/babel">
+  function mount() {
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<window.IntradayBandHero />);
+  }
+  // component self-fetches intraday_bands.json; mount once Babel has defined it.
+  if (window.IntradayBandHero) mount();
+  else setTimeout(mount, 50);
+</script>
+</body>
+</html>
